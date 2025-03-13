@@ -9,7 +9,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Load trained XGBoost model
-model = joblib.load("/Users/wanggefan/Desktop/2025 Spring/ Applied Analytics Project/Poster/accident_prediction/xgboost_accident_model.pkl")
+model = joblib.load("xgboost_accident_model.pkl")
 
 # Load historical accident dataset
 df = pd.read_csv("US_Accidents_MA.csv")
