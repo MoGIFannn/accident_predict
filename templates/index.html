@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accident Severity Prediction</title>
+
     <script>
         function validateForm() {
             let hour = document.forms["predictionForm"]["Hour"].value;
@@ -17,43 +20,53 @@
             }
         }
     </script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        h1 {
-            text-align: center;
-        }
-        form {
+        .container {
             background: white;
             padding: 20px;
             border-radius: 10px;
-            width: 50%;
-            margin: auto;
+            width: 100%;
+            max-width: 400px; /* Adjusts width for mobile devices */
             box-shadow: 0px 0px 10px gray;
+        }
+        h1 {
+            text-align: center;
+            font-size: 20px;
         }
         label {
             font-weight: bold;
+            display: block;
+            margin-top: 10px;
         }
         input, select {
             width: 100%;
-            padding: 8px;
-            margin: 5px 0 15px;
+            padding: 10px;
+            margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 14px;
         }
         button {
             background-color: #007BFF;
             color: white;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
+            margin-top: 15px;
         }
         button:hover {
             background-color: #0056b3;
@@ -61,51 +74,55 @@
     </style>
 </head>
 <body>
-    <h1>Accident Severity Prediction</h1>
-    
-    <form name="predictionForm" action="/predict" method="post" onsubmit="return validateForm()">
+
+    <div class="container">
+        <h1>Accident Severity Prediction</h1>
         
-        <label>Hour (0-23):</label>
-        <input type="number" name="Hour" min="0" max="23" value="12" required title="Time of the day (0-23)."><br>
+        <form name="predictionForm" action="/predict" method="post" onsubmit="return validateForm()">
+            
+            <label>Hour (0-23):</label>
+            <input type="number" name="Hour" min="0" max="23" value="12" required><br>
 
-        <label>Month (1-12):</label>
-        <input type="number" name="Month" min="1" max="12" value="6" title="Month of the year (1-12)."><br>
+            <label>Month (1-12):</label>
+            <input type="number" name="Month" min="1" max="12" value="6"><br>
 
-        <label>Week (1-52):</label>
-        <input type="number" name="Week" min="1" max="52" value="26" title="Week of the year (1-52)."><br>
+            <label>Week (1-52):</label>
+            <input type="number" name="Week" min="1" max="52" value="26"><br>
 
-        <label>Weather Condition:</label>
-        <select name="Weather_Condition" title="Current weather condition.">
-            <option value="Rain">Rain</option>
-            <option value="Clear" selected>Clear</option>
-            <option value="Cloudy">Cloudy</option>
-            <option value="Snow">Snow</option>
-        </select><br>
+            <label>Weather Condition:</label>
+            <select name="Weather_Condition">
+                <option value="Rain">Rain</option>
+                <option value="Clear" selected>Clear</option>
+                <option value="Cloudy">Cloudy</option>
+                <option value="Snow">Snow</option>
+            </select><br>
 
-        <label>Temperature (°F):</label>
-        <input type="number" name="Temperature" value="70" required title="Temperature in Fahrenheit."><br>
+            <label>Temperature (°F):</label>
+            <input type="number" name="Temperature" value="70" required><br>
 
-        <label>Humidity (%):</label>
-        <input type="number" name="Humidity" min="0" max="100" value="50" required title="Humidity percentage."><br>
+            <label>Humidity (%):</label>
+            <input type="number" name="Humidity" min="0" max="100" value="50" required><br>
 
-        <label>Pressure (inHg):</label>
-        <input type="number" name="Pressure" step="0.01" value="30.0" required title="Atmospheric pressure in inches of mercury."><br>
+            <label>Pressure (inHg):</label>
+            <input type="number" name="Pressure" step="0.01" value="30.0" required><br>
 
-        <label>Visibility (miles):</label>
-        <input type="number" name="Visibility" value="10" required title="Visibility distance in miles."><br>
+            <label>Visibility (miles):</label>
+            <input type="number" name="Visibility" value="10" required><br>
 
-        <label>Wind Speed (mph):</label>
-        <input type="number" name="Wind_Speed" value="5" required title="Wind speed in miles per hour."><br>
+            <label>Wind Speed (mph):</label>
+            <input type="number" name="Wind_Speed" value="5" required><br>
 
-        <label>Wind Condition:</label>
-        <select name="Wind_Condition" title="Wind direction.">
-            <option value="Wind_N">North</option>
-            <option value="Wind_S">South</option>
-            <option value="Wind_E" selected>East</option>
-            <option value="Wind_W">West</option>
-        </select><br>
+            <label>Wind Condition:</label>
+            <select name="Wind_Condition">
+                <option value="Wind_N">North</option>
+                <option value="Wind_S">South</option>
+                <option value="Wind_E" selected>East</option>
+                <option value="Wind_W">West</option>
+            </select><br>
 
-        <button type="submit">Predict</button>
-    </form>
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+
 </body>
 </html>
