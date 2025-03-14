@@ -52,6 +52,3 @@ http://127.0.0.1:8080/
 - Improve classification with ensemble learning
 - Deploy to cloud (AWS, GCP, or Heroku)
 
----
-📧 For any queries, contact: **your.email@example.com**
-
