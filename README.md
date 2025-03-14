@@ -12,7 +12,9 @@ This project aims to predict the **severity of traffic accidents** using **PCA (
 ├── Accidents_simulation.py    # Flask API for accident severity prediction
 ├── pca_logreg_accident_model.pkl # Trained model file (PCA + Logistic Regression)
 ├── US_Accidents_MA.csv        # Dataset (accident records)
-└── templates/                 # HTML templates for Flask web app
+├── templates/                 # HTML templates for Flask web app
+│   ├── index.html             # Homepage for user input
+│   ├── predicted_map.html     # Results page showing predicted accident severity map
 ```
 
 ## 🚀 How to Run the Project
@@ -52,3 +54,4 @@ http://127.0.0.1:8080/
 - Improve classification with ensemble learning
 - Deploy to cloud (AWS, GCP, or Heroku)
 
+---
