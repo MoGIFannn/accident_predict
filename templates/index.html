@@ -7,14 +7,13 @@
 
     <script>
         function validateForm() {
-            let hour = document.forms["predictionForm"]["Hour"].value;
             let temp = document.forms["predictionForm"]["Temperature"].value;
             let humidity = document.forms["predictionForm"]["Humidity"].value;
             let pressure = document.forms["predictionForm"]["Pressure"].value;
             let visibility = document.forms["predictionForm"]["Visibility"].value;
             let wind_speed = document.forms["predictionForm"]["Wind_Speed"].value;
 
-            if (hour === "" || temp === "" || humidity === "" || pressure === "" || visibility === "" || wind_speed === "") {
+            if (temp === "" || humidity === "" || pressure === "" || visibility === "" || wind_speed === "") {
                 alert("Please fill out all required fields.");
                 return false;
             }
@@ -97,14 +96,47 @@
         
         <form name="predictionForm" action="/predict" method="post" onsubmit="return validateForm()">
             
-            <label>Hour (0-23):</label>
-            <input type="number" name="Hour" min="0" max="23" value="12" required><br>
+            <label>Select Hour:</label>
+            <select name="Hour">
+                <option value="0">12:00 AM (Midnight)</option>
+                <option value="1">1:00 AM</option>
+                <option value="2">2:00 AM</option>
+                <option value="3">3:00 AM</option>
+                <option value="4">4:00 AM</option>
+                <option value="5">5:00 AM</option>
+                <option value="6">6:00 AM</option>
+                <option value="7">7:00 AM</option>
+                <option value="8">8:00 AM</option>
+                <option value="9">9:00 AM</option>
+                <option value="10">10:00 AM</option>
+                <option value="11">11:00 AM</option>
+                <option value="12">12:00 PM (Noon)</option>
+                <option value="13">1:00 PM</option>
+                <option value="14">2:00 PM</option>
+                <option value="15">3:00 PM</option>
+                <option value="16">4:00 PM</option>
+                <option value="17">5:00 PM</option>
+                <option value="18">6:00 PM</option>
+                <option value="19">7:00 PM</option>
+                <option value="20">8:00 PM</option>
+                <option value="21">9:00 PM</option>
+                <option value="22">10:00 PM</option>
+                <option value="23">11:00 PM</option>
+            </select><br>
 
             <label>Month (1-12):</label>
             <input type="number" name="Month" min="1" max="12" value="6"><br>
 
-            <label>Week (1-52):</label>
-            <input type="number" name="Week" min="1" max="52" value="26"><br>
+            <label>Day of the Week:</label>
+            <select name="Week">
+                <option value="0">Sunday (0)</option>
+                <option value="1">Monday (1)</option>
+                <option value="2">Tuesday (2)</option>
+                <option value="3">Wednesday (3)</option>
+                <option value="4">Thursday (4)</option>
+                <option value="5">Friday (5)</option>
+                <option value="6" selected>Saturday (6)</option>
+            </select><br>
 
             <label>Weather Condition:</label>
             <select name="Weather_Condition">
@@ -143,7 +175,9 @@
 
     <!-- Note Section -->
     <div class="note">
-        <strong>Note:</strong> Please enter the required values before submitting. If unsure, use the default values.
+        <strong>Note:</strong> Please select the correct **Hour of the Day**.<br>
+        - **12 AM (Midnight) = 0**, **1 AM = 1**, ..., **11 PM = 23**.<br>
+        - If unsure, use the default values before submitting.
     </div>
 
 </body>
