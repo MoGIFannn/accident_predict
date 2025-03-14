@@ -18,6 +18,10 @@
                 return false;
             }
         }
+
+        function updateValue(id, value) {
+            document.getElementById(id).textContent = value;
+        }
     </script>
 
     <style>
@@ -42,12 +46,12 @@
             padding: 20px;
             border-radius: 10px;
             width: 100%;
-            max-width: 400px; /* Adjusts width for mobile devices */
+            max-width: 420px; /* Adjusted for mobile & desktop */
             box-shadow: 0px 0px 10px gray;
             text-align: center;
         }
         h1 {
-            font-size: 20px;
+            font-size: 22px;
         }
         label {
             font-weight: bold;
@@ -62,6 +66,28 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 14px;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        input[type="range"] {
+            width: 80%;
+            height: 10px;
+            background: #007bff;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .range-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-left: 10px;
+            width: 30px;
+            text-align: center;
         }
         button {
             background-color: #007BFF;
@@ -116,7 +142,7 @@
                 <option value="15">3:00 PM</option>
                 <option value="16">4:00 PM</option>
                 <option value="17">5:00 PM</option>
-                <option value="18">6:00 PM</option>
+                <option value="18" selected>6:00 PM</option>
                 <option value="19">7:00 PM</option>
                 <option value="20">8:00 PM</option>
                 <option value="21">9:00 PM</option>
@@ -140,17 +166,6 @@
                 <option value="12">December</option>
             </select><br>
 
-            <label>Day of the Week:</label>
-            <select name="Week">
-                <option value="0">Sunday</option>
-                <option value="1">Monday</option>
-                <option value="2">Tuesday</option>
-                <option value="3">Wednesday</option>
-                <option value="4">Thursday</option>
-                <option value="5">Friday</option>
-                <option value="6" selected>Saturday</option>
-            </select><br>
-
             <label>Weather Condition:</label>
             <select name="Weather_Condition">
                 <option value="Rain">Rain</option>
@@ -160,31 +175,19 @@
             </select><br>
 
             <label>Humidity (%):</label>
-            <div class="range-container">
+            <div class="slider-container">
                 <input type="range" name="Humidity" min="0" max="100" value="50" oninput="updateValue('humidity-value', this.value)">
                 <span id="humidity-value" class="range-value">50</span>
             </div>
 
             <label>Pressure (inHg):</label>
-            <div class="range-container">
+            <div class="slider-container">
                 <input type="range" name="Pressure" min="25" max="35" step="0.1" value="30" oninput="updateValue('pressure-value', this.value)">
                 <span id="pressure-value" class="range-value">30</span>
             </div>
 
-            <label>Visibility (miles):</label>
-            <div class="range-container">
-                <input type="range" name="Visibility" min="0" max="50" value="10" oninput="updateValue('visibility-value', this.value)">
-                <span id="visibility-value" class="range-value">10</span>
-            </div>
-
-            <label>Wind Speed (mph):</label>
-            <div class="range-container">
-                <input type="range" name="Wind_Speed" min="0" max="100" value="5" oninput="updateValue('windspeed-value', this.value)">
-                <span id="windspeed-value" class="range-value">5</span>
-            </div>
-
             <label>Temperature (°F):</label>
-            <div class="range-container">
+            <div class="slider-container">
                 <input type="range" name="Temperature" min="-30" max="120" value="70" oninput="updateValue('temperature-value', this.value)">
                 <span id="temperature-value" class="range-value">70</span>
             </div>
