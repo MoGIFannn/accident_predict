@@ -1,48 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Accident Prediction</title>
+    <title>Accident Severity Prediction</title>
+    <script>
+        function validateForm() {
+            let hour = document.forms["predictionForm"]["Hour"].value;
+            let temp = document.forms["predictionForm"]["Temperature"].value;
+            let humidity = document.forms["predictionForm"]["Humidity"].value;
+            let pressure = document.forms["predictionForm"]["Pressure"].value;
+            let visibility = document.forms["predictionForm"]["Visibility"].value;
+            let wind_speed = document.forms["predictionForm"]["Wind_Speed"].value;
+
+            if (hour === "" || temp === "" || humidity === "" || pressure === "" || visibility === "" || wind_speed === "") {
+                alert("Please fill out all required fields.");
+                return false;
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            margin: auto;
+            box-shadow: 0px 0px 10px gray;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>Accident Severity Prediction</h1>
-    <form action="/predict" method="post">
-        <label>Hour:</label>
-        <input type="number" name="Hour" required><br>
+    
+    <form name="predictionForm" action="/predict" method="post" onsubmit="return validateForm()">
+        
+        <label>Hour (0-23):</label>
+        <input type="number" name="Hour" min="0" max="23" value="12" required title="Time of the day (0-23)."><br>
 
-        <label>Month:</label>
-        <input type="number" name="Month"><br>
+        <label>Month (1-12):</label>
+        <input type="number" name="Month" min="1" max="12" value="6" title="Month of the year (1-12)."><br>
 
-        <label>Week:</label>
-        <input type="number" name="Week"><br>
+        <label>Week (1-52):</label>
+        <input type="number" name="Week" min="1" max="52" value="26" title="Week of the year (1-52)."><br>
 
         <label>Weather Condition:</label>
-        <select name="Weather_Condition">
+        <select name="Weather_Condition" title="Current weather condition.">
             <option value="Rain">Rain</option>
-            <option value="Clear">Clear</option>
+            <option value="Clear" selected>Clear</option>
             <option value="Cloudy">Cloudy</option>
             <option value="Snow">Snow</option>
         </select><br>
 
-        <label>Temperature (F):</label>
-        <input type="number" name="Temperature" required><br>
+        <label>Temperature (°F):</label>
+        <input type="number" name="Temperature" value="70" required title="Temperature in Fahrenheit."><br>
 
         <label>Humidity (%):</label>
-        <input type="number" name="Humidity" required><br>
+        <input type="number" name="Humidity" min="0" max="100" value="50" required title="Humidity percentage."><br>
 
-        <label>Pressure (in):</label>
-        <input type="number" name="Pressure" required><br>
+        <label>Pressure (inHg):</label>
+        <input type="number" name="Pressure" step="0.01" value="30.0" required title="Atmospheric pressure in inches of mercury."><br>
 
-        <label>Visibility (mi):</label>
-        <input type="number" name="Visibility" required><br>
+        <label>Visibility (miles):</label>
+        <input type="number" name="Visibility" value="10" required title="Visibility distance in miles."><br>
 
         <label>Wind Speed (mph):</label>
-        <input type="number" name="Wind_Speed" required><br>
+        <input type="number" name="Wind_Speed" value="5" required title="Wind speed in miles per hour."><br>
 
         <label>Wind Condition:</label>
-        <select name="Wind_Condition">
+        <select name="Wind_Condition" title="Wind direction.">
             <option value="Wind_N">North</option>
             <option value="Wind_S">South</option>
-            <option value="Wind_E">East</option>
+            <option value="Wind_E" selected>East</option>
             <option value="Wind_W">West</option>
         </select><br>
 
