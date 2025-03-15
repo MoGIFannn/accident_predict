@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accident Severity Prediction</title> 
+    <title>Accident Severity Prediction</title>
 
     <script>
         function validateForm() {
-            let fields = ["Temperature", "Humidity", "Pressure", "Visibility", "Wind_Speed"];
-            for (let field of fields) {
-                let value = document.forms["predictionForm"][field].value;
-                if (value === "") {
-                    alert("Please fill out all required fields.");
-                    return false;
-                }
+            let temp = document.forms["predictionForm"]["Temperature"].value;
+            let humidity = document.forms["predictionForm"]["Humidity"].value;
+            let pressure = document.forms["predictionForm"]["Pressure"].value;
+            let visibility = document.forms["predictionForm"]["Visibility"].value;
+            let wind_speed = document.forms["predictionForm"]["Wind_Speed"].value;
+
+            if (temp === "" || humidity === "" || pressure === "" || visibility === "" || wind_speed === "") {
+                alert("Please fill out all required fields.");
+                return false;
             }
         }
 
@@ -44,12 +46,12 @@
             padding: 20px;
             border-radius: 10px;
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             box-shadow: 0px 0px 10px gray;
             text-align: center;
         }
         h1 {
-            font-size: 22px;
+            font-size: 20px;
         }
         label {
             font-weight: bold;
@@ -57,34 +59,13 @@
             margin-top: 10px;
             text-align: left;
         }
-        select, input {
+        input, select {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 14px;
-        }
-        .slider-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        input[type="range"] {
-            width: 80%;
-            height: 10px;
-            background: #007bff;
-            border-radius: 5px;
-            outline: none;
-            appearance: none;
-        }
-        .range-value {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-left: 10px;
-            width: 30px;
-            text-align: center;
         }
         button {
             background-color: #007BFF;
@@ -104,13 +85,25 @@
             margin-top: 15px;
             font-size: 14px;
             color: #555;
-            max-width: 450px;
+            max-width: 400px;
             text-align: center;
+        }
+        .range-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .range-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Server Address -->
     <div class="server-address"><strong>Server:</strong> 18.217.229.184</div>
 
     <div class="container">
@@ -120,7 +113,7 @@
             
             <label>Select Hour:</label>
             <select name="Hour">
-                <option value="0">12:00 AM</option>
+                <option value="0">12:00 AM (Midnight)</option>
                 <option value="1">1:00 AM</option>
                 <option value="2">2:00 AM</option>
                 <option value="3">3:00 AM</option>
@@ -132,18 +125,45 @@
                 <option value="9">9:00 AM</option>
                 <option value="10">10:00 AM</option>
                 <option value="11">11:00 AM</option>
-                <option value="12">12:00 PM</option>
+                <option value="12">12:00 PM (Noon)</option>
                 <option value="13">1:00 PM</option>
                 <option value="14">2:00 PM</option>
                 <option value="15">3:00 PM</option>
                 <option value="16">4:00 PM</option>
                 <option value="17">5:00 PM</option>
-                <option value="18" selected>6:00 PM</option>
+                <option value="18">6:00 PM</option>
                 <option value="19">7:00 PM</option>
                 <option value="20">8:00 PM</option>
                 <option value="21">9:00 PM</option>
                 <option value="22">10:00 PM</option>
                 <option value="23">11:00 PM</option>
+            </select><br>
+
+            <label>Select Month:</label>
+            <select name="Month">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6" selected>June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select><br>
+
+            <label>Day of the Week:</label>
+            <select name="Week">
+                <option value="0">Sunday</option>
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+                <option value="6" selected>Saturday</option>
             </select><br>
 
             <label>Weather Condition:</label>
@@ -155,31 +175,31 @@
             </select><br>
 
             <label>Humidity (%):</label>
-            <div class="slider-container">
+            <div class="range-container">
                 <input type="range" name="Humidity" min="0" max="100" value="50" oninput="updateValue('humidity-value', this.value)">
                 <span id="humidity-value" class="range-value">50</span>
             </div>
 
             <label>Pressure (inHg):</label>
-            <div class="slider-container">
+            <div class="range-container">
                 <input type="range" name="Pressure" min="25" max="35" step="0.1" value="30" oninput="updateValue('pressure-value', this.value)">
                 <span id="pressure-value" class="range-value">30</span>
             </div>
 
             <label>Visibility (miles):</label>
-            <div class="slider-container">
+            <div class="range-container">
                 <input type="range" name="Visibility" min="0" max="50" value="10" oninput="updateValue('visibility-value', this.value)">
                 <span id="visibility-value" class="range-value">10</span>
             </div>
 
             <label>Wind Speed (mph):</label>
-            <div class="slider-container">
+            <div class="range-container">
                 <input type="range" name="Wind_Speed" min="0" max="100" value="5" oninput="updateValue('windspeed-value', this.value)">
                 <span id="windspeed-value" class="range-value">5</span>
             </div>
 
             <label>Temperature (°F):</label>
-            <div class="slider-container">
+            <div class="range-container">
                 <input type="range" name="Temperature" min="-30" max="120" value="70" oninput="updateValue('temperature-value', this.value)">
                 <span id="temperature-value" class="range-value">70</span>
             </div>
