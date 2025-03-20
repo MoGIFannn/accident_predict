@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import json
+import logging
 from datetime import datetime
 
 # Initialize Flask App
@@ -33,6 +34,15 @@ weather_map = ["Weather_Fair", "Weather_Cloudy", "Weather_Clear", "Weather_Overc
 # Wind direction mapping (One-Hot Encoding)
 wind_map = ["Wind_C", "Wind_E", "Wind_N", "Wind_S", "Wind_V", "Wind_W"]
 
+# Define feature order (must match training)
+feature_columns = ["Start_Lat", "Start_Lng", "Traffic_Signal", "Junction", "Crossing", "Amenity",
+                   "Bump", "Give_Way", "No_Exit", "Railway", "Station", "Stop", "Traffic_Calming",
+                   "Temperature(F)", "Humidity(%)", "Pressure(in)", "Visibility(mi)", "Wind_Speed(mph)",
+                   "Duration", "Month", "Week", "Hour"] + weather_map + wind_map
+
+# Configure logging
+logging.basicConfig(filename="flask.log", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -58,32 +68,30 @@ def predict():
         severity_data = {1: [], 2: [], 3: [], 4: []}
 
         for _, row in df_infra.iterrows():
-            input_features = np.array([row[f] for f in df_infra.columns])
+            # Create infrastructure feature array
+            input_features = list(row[f] for f in df_infra.columns)
 
             # Append user inputs
-            input_features = np.append(input_features, [
+            input_features += [
                 user_input["Temperature(F)"], user_input["Humidity(%)"],
                 user_input["Pressure(in)"], user_input["Visibility(mi)"],
                 user_input["Wind_Speed(mph)"], DEFAULT_DURATION,
                 user_input["Month"], user_input["Week"], user_input["Hour"]
-            ])
+            ]
 
             # One-Hot Encoding for Weather Condition
-            weather_one_hot = np.zeros(len(weather_map))
-            if user_input["Weather_Condition"] in weather_map:
-                weather_idx = weather_map.index(user_input["Weather_Condition"])
-                weather_one_hot[weather_idx] = 1
-            input_features = np.append(input_features, weather_one_hot)
+            weather_one_hot = [1 if user_input["Weather_Condition"] == w else 0 for w in weather_map]
+            input_features += weather_one_hot
 
             # One-Hot Encoding for Wind Condition
-            wind_one_hot = np.zeros(len(wind_map))
-            if user_input["Wind_Condition"] in wind_map:
-                wind_idx = wind_map.index(user_input["Wind_Condition"])
-                wind_one_hot[wind_idx] = 1
-            input_features = np.append(input_features, wind_one_hot)
+            wind_one_hot = [1 if user_input["Wind_Condition"] == w else 0 for w in wind_map]
+            input_features += wind_one_hot
 
-            # ✅ Predict severity (Apply reverse label shift: +1)
-            severity_prediction = int(model.predict([input_features])[0]) + 1
+            # ✅ Convert NumPy array to Pandas DataFrame with proper feature names
+            input_df = pd.DataFrame([input_features], columns=feature_columns)
+
+            # ✅ Predict severity and apply reverse label shift (+1)
+            severity_prediction = int(model.predict(input_df)[0]) + 1
 
             # Store predictions separately by severity
             if severity_prediction in severity_data:
@@ -95,6 +103,7 @@ def predict():
         return render_template('predicted_map.html', accident_data=json.dumps(severity_data), user_inputs=user_input)
 
     except Exception as e:
+        logging.error(f"Error in prediction: {str(e)}")
         return f"Error: {str(e)}"
 
 
