@@ -9,10 +9,10 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Load trained XGBoost model
-model = joblib.load("/Users/wanggefan/Desktop/2025 Spring/ Applied Analytics Project/Poster/accident_prediction/xgboost_accident_model.pkl")
+model = joblib.load("xgboost_accident_model.pkl")
 
 # Load historical accident dataset
-df = pd.read_csv("/Users/wanggefan/Desktop/2025 Spring/ Applied Analytics Project/Poster/Best_perfomance_code/US_Accidents_MA.csv")
+df = pd.read_csv("US_Accidents_MA.csv")
 
 # Extract required location and infrastructure features
 df_infra = df[["Start_Lat", "Start_Lng", "Traffic_Signal", "Junction", "Crossing", "Amenity",
