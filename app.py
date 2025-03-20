@@ -82,8 +82,8 @@ def predict():
                 wind_one_hot[wind_idx] = 1
             input_features = np.append(input_features, wind_one_hot)
 
-            # Predict severity
-            severity_prediction = int(model.predict([input_features])[0])
+            # ✅ Predict severity (Apply reverse label shift: +1)
+            severity_prediction = int(model.predict([input_features])[0]) + 1
 
             # Store predictions separately by severity
             if severity_prediction in severity_data:
@@ -96,6 +96,7 @@ def predict():
 
     except Exception as e:
         return f"Error: {str(e)}"
+
 
 @app.route('/map')
 def show_map():
