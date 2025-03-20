@@ -3,17 +3,16 @@ import pandas as pd
 import numpy as np
 import joblib
 import json
-import logging
 from datetime import datetime
 
 # Initialize Flask App
 app = Flask(__name__)
 
 # Load trained XGBoost model
-model = joblib.load("xgboost_accident_model.pkl")
+model = joblib.load("/Users/wanggefan/Desktop/2025 Spring/ Applied Analytics Project/Poster/accident_prediction/xgboost_accident_model.pkl")
 
 # Load historical accident dataset
-df = pd.read_csv("US_Accidents_MA.csv")
+df = pd.read_csv("/Users/wanggefan/Desktop/2025 Spring/ Applied Analytics Project/Poster/Best_perfomance_code/US_Accidents_MA.csv")
 
 # Extract required location and infrastructure features
 df_infra = df[["Start_Lat", "Start_Lng", "Traffic_Signal", "Junction", "Crossing", "Amenity",
@@ -33,21 +32,6 @@ weather_map = ["Weather_Fair", "Weather_Cloudy", "Weather_Clear", "Weather_Overc
 
 # Wind direction mapping (One-Hot Encoding)
 wind_map = ["Wind_C", "Wind_E", "Wind_N", "Wind_S", "Wind_V", "Wind_W"]
-
-# Ensure the correct feature order from training
-feature_columns = [
-    'Start_Lat', 'Start_Lng', 'Temperature(F)', 'Humidity(%)', 'Pressure(in)',
-    'Visibility(mi)', 'Wind_Speed(mph)', 'Amenity', 'Bump', 'Crossing',
-    'Give_Way', 'Junction', 'No_Exit', 'Railway', 'Station', 'Stop',
-    'Traffic_Calming', 'Traffic_Signal', 'Duration', 'Month', 'Week', 'Hour',
-    'Weather_Fair', 'Weather_Cloudy', 'Weather_Clear', 'Weather_Overcast',
-    'Weather_Snow', 'Weather_Haze', 'Weather_Rain', 'Weather_Thunderstorm',
-    'Weather_Windy', 'Weather_Hail', 'Weather_Thunder', 'Wind_C', 'Wind_E',
-    'Wind_N', 'Wind_S', 'Wind_V', 'Wind_W'
-]
-
-# Configure logging
-logging.basicConfig(filename="flask.log", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 @app.route('/')
 def index():
@@ -74,31 +58,32 @@ def predict():
         severity_data = {1: [], 2: [], 3: [], 4: []}
 
         for _, row in df_infra.iterrows():
-            # Create input feature list in the correct order
-            input_features = [
-                row["Start_Lat"], row["Start_Lng"], 
-                user_input["Temperature(F)"], user_input["Humidity(%)"], 
-                user_input["Pressure(in)"], user_input["Visibility(mi)"], 
-                user_input["Wind_Speed(mph)"], row["Amenity"], row["Bump"], 
-                row["Crossing"], row["Give_Way"], row["Junction"], row["No_Exit"], 
-                row["Railway"], row["Station"], row["Stop"], row["Traffic_Calming"], 
-                row["Traffic_Signal"], DEFAULT_DURATION, 
+            input_features = np.array([row[f] for f in df_infra.columns])
+
+            # Append user inputs
+            input_features = np.append(input_features, [
+                user_input["Temperature(F)"], user_input["Humidity(%)"],
+                user_input["Pressure(in)"], user_input["Visibility(mi)"],
+                user_input["Wind_Speed(mph)"], DEFAULT_DURATION,
                 user_input["Month"], user_input["Week"], user_input["Hour"]
-            ]
+            ])
 
             # One-Hot Encoding for Weather Condition
-            weather_one_hot = [1 if user_input["Weather_Condition"] == w else 0 for w in weather_map]
-            input_features += weather_one_hot
+            weather_one_hot = np.zeros(len(weather_map))
+            if user_input["Weather_Condition"] in weather_map:
+                weather_idx = weather_map.index(user_input["Weather_Condition"])
+                weather_one_hot[weather_idx] = 1
+            input_features = np.append(input_features, weather_one_hot)
 
             # One-Hot Encoding for Wind Condition
-            wind_one_hot = [1 if user_input["Wind_Condition"] == w else 0 for w in wind_map]
-            input_features += wind_one_hot
+            wind_one_hot = np.zeros(len(wind_map))
+            if user_input["Wind_Condition"] in wind_map:
+                wind_idx = wind_map.index(user_input["Wind_Condition"])
+                wind_one_hot[wind_idx] = 1
+            input_features = np.append(input_features, wind_one_hot)
 
-            # ✅ Convert input_features to a Pandas DataFrame with correct column names
-            input_df = pd.DataFrame([input_features], columns=feature_columns)
-
-            # ✅ Make Prediction (Apply reverse label shift: +1)
-            severity_prediction = int(model.predict(input_df)[0]) + 1
+            # Predict severity
+            severity_prediction = int(model.predict([input_features])[0])
 
             # Store predictions separately by severity
             if severity_prediction in severity_data:
@@ -110,13 +95,11 @@ def predict():
         return render_template('predicted_map.html', accident_data=json.dumps(severity_data), user_inputs=user_input)
 
     except Exception as e:
-        logging.error(f"Error in prediction: {str(e)}")
         return f"Error: {str(e)}"
-
 
 @app.route('/map')
 def show_map():
     return render_template('predicted_map.html')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8080)
+    app.run(debug=True, host="0.0.0.0", port=8080)
