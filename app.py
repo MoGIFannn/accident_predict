@@ -34,7 +34,7 @@ weather_map = ["Weather_Fair", "Weather_Cloudy", "Weather_Clear", "Weather_Overc
 # Wind direction mapping (One-Hot Encoding)
 wind_map = ["Wind_C", "Wind_E", "Wind_N", "Wind_S", "Wind_V", "Wind_W"]
 
-# Define feature order (must match training)
+# Ensure the correct feature order from training
 feature_columns = [
     'Start_Lat', 'Start_Lng', 'Temperature(F)', 'Humidity(%)', 'Pressure(in)',
     'Visibility(mi)', 'Wind_Speed(mph)', 'Amenity', 'Bump', 'Crossing',
@@ -74,14 +74,15 @@ def predict():
         severity_data = {1: [], 2: [], 3: [], 4: []}
 
         for _, row in df_infra.iterrows():
-            # Create infrastructure feature array
-            input_features = list(row[f] for f in df_infra.columns)
-
-            # Append user inputs
-            input_features += [
-                user_input["Temperature(F)"], user_input["Humidity(%)"],
-                user_input["Pressure(in)"], user_input["Visibility(mi)"],
-                user_input["Wind_Speed(mph)"], DEFAULT_DURATION,
+            # Create input feature list in the correct order
+            input_features = [
+                row["Start_Lat"], row["Start_Lng"], 
+                user_input["Temperature(F)"], user_input["Humidity(%)"], 
+                user_input["Pressure(in)"], user_input["Visibility(mi)"], 
+                user_input["Wind_Speed(mph)"], row["Amenity"], row["Bump"], 
+                row["Crossing"], row["Give_Way"], row["Junction"], row["No_Exit"], 
+                row["Railway"], row["Station"], row["Stop"], row["Traffic_Calming"], 
+                row["Traffic_Signal"], DEFAULT_DURATION, 
                 user_input["Month"], user_input["Week"], user_input["Hour"]
             ]
 
@@ -93,11 +94,11 @@ def predict():
             wind_one_hot = [1 if user_input["Wind_Condition"] == w else 0 for w in wind_map]
             input_features += wind_one_hot
 
-            # ✅ Convert NumPy array to Pandas DataFrame with proper feature names
+            # ✅ Convert input_features to a Pandas DataFrame with correct column names
             input_df = pd.DataFrame([input_features], columns=feature_columns)
 
-            # ✅ Predict severity and apply reverse label shift (+1)
-            severity_prediction = int(model.predict(input_df)[0]) 
+            # ✅ Make Prediction (Apply reverse label shift: +1)
+            severity_prediction = int(model.predict(input_df)[0]) + 1
 
             # Store predictions separately by severity
             if severity_prediction in severity_data:
