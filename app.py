@@ -35,10 +35,16 @@ weather_map = ["Weather_Fair", "Weather_Cloudy", "Weather_Clear", "Weather_Overc
 wind_map = ["Wind_C", "Wind_E", "Wind_N", "Wind_S", "Wind_V", "Wind_W"]
 
 # Define feature order (must match training)
-feature_columns = ["Start_Lat", "Start_Lng", "Traffic_Signal", "Junction", "Crossing", "Amenity",
-                   "Bump", "Give_Way", "No_Exit", "Railway", "Station", "Stop", "Traffic_Calming",
-                   "Temperature(F)", "Humidity(%)", "Pressure(in)", "Visibility(mi)", "Wind_Speed(mph)",
-                   "Duration", "Month", "Week", "Hour"] + weather_map + wind_map
+feature_columns = [
+    'Start_Lat', 'Start_Lng', 'Temperature(F)', 'Humidity(%)', 'Pressure(in)',
+    'Visibility(mi)', 'Wind_Speed(mph)', 'Amenity', 'Bump', 'Crossing',
+    'Give_Way', 'Junction', 'No_Exit', 'Railway', 'Station', 'Stop',
+    'Traffic_Calming', 'Traffic_Signal', 'Duration', 'Month', 'Week', 'Hour',
+    'Weather_Fair', 'Weather_Cloudy', 'Weather_Clear', 'Weather_Overcast',
+    'Weather_Snow', 'Weather_Haze', 'Weather_Rain', 'Weather_Thunderstorm',
+    'Weather_Windy', 'Weather_Hail', 'Weather_Thunder', 'Wind_C', 'Wind_E',
+    'Wind_N', 'Wind_S', 'Wind_V', 'Wind_W'
+]
 
 # Configure logging
 logging.basicConfig(filename="flask.log", level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
