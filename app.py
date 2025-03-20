@@ -97,7 +97,7 @@ def predict():
             input_df = pd.DataFrame([input_features], columns=feature_columns)
 
             # ✅ Predict severity and apply reverse label shift (+1)
-            severity_prediction = int(model.predict(input_df)[0]) + 1
+            severity_prediction = int(model.predict(input_df)[0]) 
 
             # Store predictions separately by severity
             if severity_prediction in severity_data:
